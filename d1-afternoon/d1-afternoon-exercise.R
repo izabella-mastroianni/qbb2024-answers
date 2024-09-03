@@ -90,4 +90,5 @@ ggplot(data=RNAseqOnly,
 
 ggsave(filename = "~/qbb2024-answers/d1-afternoon/Q9.pdf")
 
+#Q9: Different tissues have different autolysis scores - it is higher in the colon, for example. 
 
