@@ -39,3 +39,7 @@ Pseudogenes are spread across more chromosomes than IG genes.
 A better pattern would be:
 grep "gene_type .*pseudogene.*" genes.gtf
 
+## Answer 3
+
+ sed "s/ /\t/g" genes.gtf > gene-tabs.gtf
+ cut -f 1,4,5,14 gene-tabs.gtf > gene-tabs.bed
