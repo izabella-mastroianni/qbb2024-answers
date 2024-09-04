@@ -16,9 +16,10 @@ ENSG00000168036 is the ensembl_gene_id with the most go_ids
 
 grep -w "ENSG00000168036" hg38-gene-metadata-go.tsv | sort -k3 | > q2.txt
 
-Based on the GO terms, I think the gene is a transcriptional regulator and part of the MAPK cascade in T cells.
+Based on the GO terms, I think the gene is a transcriptional factor and regulator in many different cell types, including T cells and adherens.
 
+## Answer 1 (section 2)
 
-
+grep -e 
 
 
