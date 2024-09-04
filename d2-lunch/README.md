@@ -20,6 +20,13 @@ Based on the GO terms, I think the gene is a transcriptional factor and regulato
 
 ## Answer 1 (section 2)
 
-grep -e 
+grep -w "IG_._gene" genes.gtf | cut -f 1 | uniq -c
 
+Number of IG genes on each of the following chromosomes: chr2 = 52, chr14 = 91, chr15 = 16, chr16 = 6, chr21 = 1, chr22 = 48
+
+grep -w "IG_._pseudogene" genes.gtf | cut -f 1 | uniq -c
+
+Number of IG pseudogenes on each of the following chromosomes: chr1 = 1, chr 2 = 45, chr8 = 1, chr9 = 5, chr10 = 1, chr14 = 83, chr15 = 6, chr16 = 8, chr18 = 1, chr22 = 48
+
+Pseudogenes are spread across more chromosomes than IG genes. 
 
