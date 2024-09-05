@@ -9,6 +9,6 @@ pattern = sys.argv[1]
 for line in my_file:
     line = line.rstrip("\n")
     if pattern in line:
-    print( line )
+        print( line )
   
 my_file.close()
