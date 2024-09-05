@@ -3,8 +3,7 @@
 import sys
 
 my_file = open( sys.argv[1] )
-pattern = sys.argv[1]
-
+pattern = sys.argv[2]
 
 for line in my_file:
     line = line.rstrip("\n")
