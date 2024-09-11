@@ -68,8 +68,7 @@ ggplot(data = dnm_by_paternal_age) +
 
 t.test(dnm_by_paternal_age$n_paternal_dnm, dnm_by_paternal_age$n_maternal_dnm, paired = TRUE)
 #I used a paired t test because we are just comparing two items. 
-#The p-value < 2.2e-16 is statistically significant, meaning that there is a statistically significant difference between paternal and maternal DNMs 
-
+#The p-value < 2.2e-16 is statistically significant, meaning that given the null hypothesis, the probability of pulling out these values is very low. The mean difference indicates that the number of maternal DNMs is on average 39 mutations fewer than paternal DNMs.
 
 
 
