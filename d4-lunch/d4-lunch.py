@@ -4,6 +4,9 @@ import sys
 
 import numpy
 
+# head -n 500 GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_tpm.gct > test_data.gct
+# ./d4-lunch.py gene_tissue.tsv GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_tpm.gct
+
 # Q1
 
 # get gene tissue file name (gene_tissue.tsv)
@@ -17,9 +20,9 @@ for line in fs:
     # split line into fields: remove end of line character and tab
     fields = line.rstrip("\n").split("\t")
     # create key from gene and tissue in () to make tuple so we make it an immutable
-    key = (fields[0], fields[2])
+    key = (fields[0])
     # initalize dict from key with list to hold samples, use [] to make it a list
-    relevant_samples[key] = []
+    relevant_samples[key] = fields[2]
 fs.close()
 
 # print(relevant_samples)
@@ -65,22 +68,57 @@ header = header[2:]
 
 tissue_columns = {}
 # key = tissue and value = samples set in the following line with items function 
-for tissue, samples in tissue_samples.items():
+for tissue,samples in tissue_samples.items():
     tissue_columns.setdefault(tissue, [])
     for sample in samples: 
         if sample in header:
+            # what position is the sample we are looking at right now
             position = header.index(sample)
             tissue_columns[tissue].append(position)
 
-#need to sort tissue_columns by tissue or somehow count samples per tissue
-sorted_tissue_columns = tissue_columns.sort_values(by='tissue')
-print(sorted_tissue_columns)
+# print(tissue_columns)
+
+
 
 # Q5
+# need to count samples per tissue, determine which has the most (increasing variable value starting at 0)
+maxValue = 0
+maxValueKey = " "
+for tissue,sample in tissue_columns.items():
+    if len(sample) > maxValue: 
+        maxValue = len(sample)
+        maxValueKey = tissue
+        
+# print(maxValueKey)
 
-#The tissue type with the largest number of samples is ___ and the fewest is ___.
+# need to count samples per tissue to find which has the least, start mnValue at very high number so all are smaller and it can work down to least
+minValue = 20000000
+minValueKey = " "
+for tissue,sample in tissue_columns.items():
+    if len(sample) < minValue: 
+        minValue = len(sample)
+        minValueKey = tissue
+        
+# print(minValueKey)
 
-# Q6
 
+#The tissue type with the largest number of samples is muscle - skeletal and the fewest is Cells - Leukemia cell line (CML).
+
+# Q6 (got moved to advanced/optional, not finishing but did start)
+
+#relevant_tissues to find the genes and tissue_columns to find the columns, then pull out expression values from tmp
+
+#read in file we need
+f = open("test_data.gct", "r")
+for l in f: 
+    l = l.strip().split("\t")
+    # print(l[0])
+
+    geneName = l[0]
+
+# the keys of the relvant_samples dictionary are the gene names
+    if geneName in relevant_samples.keys():
+        myTissue = relevant_samples[geneName] # find the tissue your gene is expressed in
+        print(tissue_columns[myTissue])
 
 
