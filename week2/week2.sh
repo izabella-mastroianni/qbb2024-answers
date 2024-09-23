@@ -11,7 +11,7 @@ chrfiles=("chr1_exons.bed" "chr1_genes.bed" "chr1_cCREs.bed")
 for I in "${chrfiles[@]}";
     do
         bedtools sort -i ${I} > sorted.bed #want to save here as new, sorted file
-        echo ${I}        
+        # echo ${I}        
         bedtools merge -i sorted.bed > merged_${I} #save as merged files
 
     done
@@ -21,6 +21,6 @@ for I in "${chrfiles[@]}";
 # 1.5
 # use bedtools to create intron feature file, A - B
 
-bedtools subtract -a <merged_chr1_genes.bed> -b <merged_chr1_exons.bed>
+bedtools subtract -a merged_chr1_genes.bed -b merged_chr1_exons.bed > introns_chr1.bed
 
 
