@@ -15,11 +15,11 @@ snp_files=("chr1_snps_0.*.bed") # maybe change wild card
 feature_files=("chr1_cCREs.bed", "chr1_exons.bed", "genome_chr1.bed", "other_chr1.bed") 
 # per snp file (aka MAF value) per feature file
 
-for file in snp_files
+for file in "${snp_files[@]}";
     do
         # SNP coverage of the whole chromosome 
         bedtools coverage -a file -b genome_chr1.bed > temp_coverage.txt
-        # sum SNPs from coverage
+        # sum SNPs from coverage - don't know how to figure out column
         coverage_SNPs_sum=$(awk '{s+=$1}END{print s}' temp_coverage.txt)
         # sum total bases from coverage
 
