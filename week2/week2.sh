@@ -27,14 +27,14 @@ bedtools subtract -a merged_chr1_genes.bed -b merged_chr1_exons.bed > introns_ch
 genome_file="genome_chr1.bed"
 subtractingfiles=("merged_chr1_exons.bed" "introns_chr1.bed" "merged_chr1_cCREs.bed")
 subresult="$genome_file"
-for subtractingfile in "{$subtractingfiles[@]}";
-    do 
-        subresult="${subresult%.bed}_temp.bed"
-        bedtools subtract -a "$subresult" -b "$subtractingfiles" > "$subresult"
-    done     
+
+for subtractingfile in "${subtractingfiles[@]}"; do 
+    temp_file="${subresult%.bed}_temp.bed"
+    bedtools subtract -a "$subresult" -b "$subtractingfile" > "$temp_file"
+    subresult="$temp_file"
+done     
 
 mv "$subresult" "other_chr1.bed"
-
 
 
 
