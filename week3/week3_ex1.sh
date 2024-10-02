@@ -42,9 +42,12 @@ gunzip sacCer3.fa.gz
 # create index for sacCer3 reference 
 bwa index sacCer3.fa
 
-# There are chromosomes in the yeast genome 
+# find number of chromosome using count of number of times chr appears
+grep -c 'chr' sacCer3.fa
 
+# There are 17 chromosomes in the yeast genome 
 
+## Question 2.1 ##
 
 
 
