@@ -1,4 +1,4 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
 
 import numpy
 
@@ -12,16 +12,31 @@ output_file = open('AF.txt', 'w')
 # add a header to the output file
 output_file.write('Allele_Frequency\n')
 
+# make a dictionary to ensure allele frequencies don't repeat/only get unique ones
+allele_frequencies = {}
+
 
 for line in vcf_file:
     if line.startswith('#'):
+        # look for header with allele frequency info
+        if line.startswith('#INFO'):
+            print(line.strip())
         continue
     fields = line.rstrip('\n').split('\t')
     # INFO field is the 8th column, python counting starts at 0
     info_field = fields[7]
 
+    # since AF is allele frequency and what we want, find that field and pull out the values
+    for entry in info_field.split(';'):
+        if entry.startswith('AF='):
+            af_value = entry.split('=')[1]
+            # don't want af of 0, so exclude
+            if af_value != '0':
+                allele_frequencies[af_value] = None 
 
-    # grab what you need from `fields`
+for af in allele_frequencies.keys():
+    output_file.write(f"{af}\n")   
+
 
 
 # close files
