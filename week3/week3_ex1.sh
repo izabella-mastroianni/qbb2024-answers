@@ -41,7 +41,11 @@ du -h *.fastq
 # The largest file is A01_62.fastq, 149Mb. The smallest file is A01_27.fastq, 110Mb. 
 
 ## Question 1.5 ##
+FASTQC A01_09.fastq
 
+# The median base quality along the read is around 30. 
+# This means that the probabilty a given base called is an error is around 0.1%.
+# I do observe some minimal variation in quality with respect to the position in the read, with slightly worse at the ends and best in the middle. 
 
 
 ## Question 2.1 ##
