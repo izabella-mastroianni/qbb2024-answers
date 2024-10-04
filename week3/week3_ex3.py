@@ -5,15 +5,19 @@ import numpy
 
 ## Exercise 3 ##
 
+# make a list to ensure allele frequencies don't repeat/only get unique ones 
+allele_frequencies = []
+
+# list for read depth
+read_depth = []
+
 # specify VCF file and output AF.txt file
 vcf_file = open('biallelic.vcf')
-output_file = open('AF.txt', 'w')
+af_output_file = open('AF.txt', 'w')
 
-# add a header to the output file
-output_file.write('Allele_Frequency\n')
+# add a header to the output file for af
+af_output_file.write('Allele_Frequency\n')
 
-# make a dictionary to ensure allele frequencies don't repeat/only get unique ones
-allele_frequencies = {}
 
 
 for line in vcf_file:
@@ -22,6 +26,7 @@ for line in vcf_file:
         if line.startswith('#INFO'):
             print(line.strip())
         continue
+
     fields = line.rstrip('\n').split('\t')
     # INFO field is the 8th column, python counting starts at 0
     info_field = fields[7]
@@ -32,14 +37,15 @@ for line in vcf_file:
             af_value = entry.split('=')[1]
             # don't want af of 0, so exclude
             if af_value != '0':
-                allele_frequencies[af_value] = None 
+                if af_value not in allele_frequencies:
+                    allele_frequencies.append(af_value)
 
-for af in allele_frequencies.keys():
-    output_file.write(f"{af}\n")   
+for af in allele_frequencies:
+    af_output_file.write(f"{af}\n")   
 
 
 
 # close files
 vcf_file.close()
-output_file.close()
+af_output_file.close()
 
