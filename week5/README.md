@@ -11,7 +11,9 @@ Serine proteases make up most of the overrepresetned sequences in the sample. Th
 
 
 ### Question 2 ####
+From the Sequence Counts table from FastQC, all samples are below the 45% unique reads cut off and would all be rejected. You would not keep any samples.
 
+Once you increase the min value slider, you can see the blocks of triplicates clearly. This suggests that the replicates are very consistent, which is encouraging for sample data quality and data reproducability. 
 
 
 ### Question 3.3 ####
