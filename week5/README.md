@@ -17,10 +17,10 @@ Once you increase the min value slider, you can see the blocks of triplicates cl
 
 
 ### Question 3.3 ####
-
+The two samples Fe_Rep1 and LFC_Fe_Rep3 appear to have their labels switched.
 
 
 ### Question 3.6 ####
-
+The categories of enrichment in the panther GO analysis make sense because they are mostly related to metabolic processes, which would logically be enriched in the gut. There is also an enrichment of developmental processes, which makes sense because the gut in flies is involved in providing energy for and specifying itself during the development process. 
 
 
