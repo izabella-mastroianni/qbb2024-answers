@@ -72,6 +72,35 @@ dev.off()
 
 ### Exercise 2 ###
 
+# extract VST expression matrix and bind to metadata
+vsd_df <- assay(vsd) %>%
+  t() %>%
+  as_tibble()
+
+vsd_df <- bind_cols(metadata_df, vsd_df)
+
+# differential expression of gene WASH7P
+m1 <- lm(formula = WASH7P ~ DTHHRDY + AGE + SEX, data = vsd_df) %>%
+  summary() %>%
+  tidy()
+
+# 2.1.1
+# WASH7P does not show significant evidence of sex-differential expression because the p value of 0.279 is more than 0.05 threshold needed for significance
+
+# 2.1.2
+# differential expression of gene SLC25A47
+m2 <- lm(formula = SLC25A47 ~ DTHHRDY + AGE + SEX, data = vsd_df) %>%
+  summary() %>%
+  tidy()
+
+# SLC25A47 does show significant evidence of sex-differential expression because the p value of 0.0257 is less than 0.05 threshold needed for significance. 
+# The direction is that it is higher expressed in males because for SEXmale the estimate is positive
+
+# 2.2.1 
+# apply DESeq2 to fit regression model 
+dds <- DESeq(dds)
+
+
 
 
 
