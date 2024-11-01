@@ -106,7 +106,7 @@ res <- results(dds, name = "SEX_male_vs_female")  %>%
   as_tibble(rownames = "GENE_NAME")
 
 # 2.3.2
-# reorder so most diff expressed genes are at the top 
+# reorder so most diff expressed genes are at the top and remove NAs
 res <- res %>%
   filter(!is.na(padj)) %>%
   arrange(padj)
@@ -118,7 +118,50 @@ sex_genes_de <- res %>%
 # there are 262 genes that are differentially expressed between males and females at a 10% FDR
 
 # 2.3.3
-# 
+# load in gene locations 
+gene_locations_df <- read_delim("gene_locations.txt")
+
+# left join gene locations to results by gene_name and arrange smallest to largest by padj
+res_locations <- res %>%
+  left_join(gene_locations_df, by = "GENE_NAME") %>%
+  arrange(padj)
+
+# most of the genes that are strongly upregulated in males vs females are on the Y chromosome, 
+# some are on the X and it takes until the 27th top hit to get an autosomal chromosome
+# there are more male upregulated genes at the top of the list because they are on the Y chromosome which only males have
+
+
+# 2.3.4
+# while the p values and padj values are different between the linear regression and the DESeq2 analysis, 
+# the two genes WASH7P and SLC25A47 are still called as not significant or significant in both analyses
+
+# 2.4.1
+# results of DESeq2 for DTHHRDY differential gene expression
+res_DTHHRDY <- results(dds, name = "DTHHRDY_ventilator_case_vs_fast_death_of_natural_causes")  %>%
+  as_tibble(rownames = "GENE_NAME")
+
+# reorder so most diff expressed genes are at the top and remove NAs
+res_DTHHRDY <- res_DTHHRDY %>%
+  filter(!is.na(padj)) %>%
+  arrange(padj)
+
+# number of genes differentially expressed by death classification with 10% FDR
+death_genes_de <- res_DTHHRDY %>% 
+  filter(padj < 0.1) %>% 
+  tally()
+
+# there are 16069 genes that are differentially expressed between death classification at a 10% FDR
+
+# 2.4.2
+# it does make sense that more genes are differentially expressed based on death compared to sex 
+# since the body upregulates many different genes and processes during death, and the cause of death impacts which are
+# while humans are very similar in gene expression regardless of sex, and only a few genes on the sex chromosomes and 
+# their target genes make up this difference 
+
+
+### Exercise 3 ###
+
+
 
 
 
