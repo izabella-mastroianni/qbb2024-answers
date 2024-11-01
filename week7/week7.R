@@ -163,14 +163,14 @@ death_genes_de <- res_DTHHRDY %>%
 
 # 3.1
 # create volcano plot to depict differential expression results by sex
-ggplot(data = res, aes(x = log2FoldChange, y = -log10(padj))) +
-  geom_point(aes(color = (abs(log2FoldChange) > 2 & padj < 1e-20))) +
-  geom_text(data = res %>% filter(abs(log2FoldChange) > 2 & pvalue < 1e-50),
+volcano_plot <- ggplot(data = res, aes(x = log2FoldChange, y = -log10(padj))) +
+  geom_point(aes(color = (abs(log2FoldChange) > 2 & padj < 0.1))) +
+  geom_text(data = res %>% filter(abs(log2FoldChange) > 2 & padj < 0.05),
             aes(x = log2FoldChange, y = -log10(pvalue) + 5, label = GENE_NAME), size = 3,) +
   theme_bw() +
   theme(legend.position = "none") +
   scale_color_manual(values = c("lightblue", "firebrick")) +
-  labs(title = 
+  labs(title = "Differential Expression of Genes by Sex",
     y = expression(-log[10]("padj")), 
     x = expression(log[2]("fold change")))
 
