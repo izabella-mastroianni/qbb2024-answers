@@ -100,6 +100,28 @@ m2 <- lm(formula = SLC25A47 ~ DTHHRDY + AGE + SEX, data = vsd_df) %>%
 # apply DESeq2 to fit regression model 
 dds <- DESeq(dds)
 
+# 2.3.1
+# extract differential expression results for variable sex
+res <- results(dds, name = "SEX_male_vs_female")  %>%
+  as_tibble(rownames = "GENE_NAME")
+
+# 2.3.2
+# reorder so most diff expressed genes are at the top 
+res <- res %>%
+  filter(!is.na(padj)) %>%
+  arrange(padj)
+
+# count number of rows with padj value less than 0.1, aka an FDR of 10% or greater 
+sex_genes_de <- res %>% 
+  filter(padj < 0.1) %>% 
+  tally()
+# there are 262 genes that are differentially expressed between males and females at a 10% FDR
+
+# 2.3.3
+# 
+
+
+
 
 
 
