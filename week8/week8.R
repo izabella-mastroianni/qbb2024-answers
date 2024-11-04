@@ -105,9 +105,40 @@ summary(celldetected)
 
 # 1059/13407, this represents about 8% of the total number of genes
 
+# mito genes vector
+mito <- grep("^mt:", rownames(gut), value = TRUE)
+
+# dataframe for mito genes
+df <- perCellQCMetrics(gut, subsets = list(Mito = mito))
+
+# convert df to data.frame
+df <- as.data.frame(df)
+summary(df)
+
+# add metrics to cell data
+colData(gut) <- cbind(colData(gut), df)
+
+# check above worked 
+print(colnames(colData(gut)))
 
 
+## Question 5
 
+# colData as df for plotting
+col_data_df <- as.data.frame(colData(gut))
+
+# plot subsets_Mito_percent vs broad_annotation
+mito_vs_broad_plot <- ggplot(col_data_df, aes(x = broad_annotation, y = subsets_Mito_percent)) +
+  geom_boxplot() +
+  theme(axis.text.x=element_text(angle=90)) +
+  labs(x = "Broad Tissue Annotation", y = "Mitochondrial Percent",
+  title = "Mitochondrial Gene Expression in Broad Tissue Categories") +
+  theme_minimal()
+
+ggsave("mito_vs_broad_plot.png", plot = mito_vs_broad_plot, width = 8, height = 6, dpi = 300)
+
+# epithelial cells and gut cells have higher percentages of mitochondrial gene expression
+# this is possibly because there is a lot of rapid turnover of these cell types
 
 
 
