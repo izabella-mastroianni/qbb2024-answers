@@ -44,13 +44,66 @@ num_cols_colData <- ncol(colData(gut))
 
 # to see column names in colData(gut)
 colnames(colData(gut))
-# The three most interesting column names to me are tissue, n_genes, and age because combining information from those will give you insight into fly aging.
+# The three most interesting column names to me are tissue, n_genes, and age 
+# because combining information from those will give you insight into fly aging.
 
 # UMAP plot
-plotReducedDim(gut, "X_umap", colour_by= "broad_annotation")
+UMAP_broad_annotation_plot <- plotReducedDim(gut, "X_umap", colour_by= "broad_annotation")
+
+ggsave("UMAP_broad_annotation_plot.png", plot = UMAP_broad_annotation_plot, width = 8, height = 6, dpi = 300)
 
 
+### Exercise 2 ###
 
+# sum expression of each gene across all cells
+genecounts <- rowSums(assay(gut))
+
+
+## Question 3 
+
+# get summary stats of genecounts
+summary(genecounts)
+# the mean genecount is 3185 and the median is 254. 
+# from this, you can conclude that there is a wide distribution of gene counts 
+# since the middle value is so different from the average
+
+# sort genecounts from highest to lowest
+head(sort(genecounts, decreasing = TRUE))
+# the three genes with the highest expression are lncRNA:Hsromega, pre-rRNA:CR45845, and lncRNA:roX1.
+# they are all non-coding RNAs, either long or ribosomal. 
+
+
+## Question 4a
+
+# cell counts using assay to make gut a matrix that colSums can process
+cellcounts <- colSums(assay(gut))
+
+# make histogram of cell counts
+hist(cellcounts)
+
+# summary stats of cellcounts
+summary(cellcounts)
+# the mean number of counts per cell is 3622
+
+# for cells with very high total counts (above 10k), this could be due to the biological
+# function of the cell if its job is to make a lot of a protein,
+# or it could be due to technical errors and quality control issue, like if a cell lysed
+# multiple cells are counted as one, or if contaminants not in the cell are counted as in the cell. 
+
+
+## Question 4b
+
+# number of genes detected in cell vector
+celldetected <- colSums(assay(gut)>0)
+
+# histogram of cells detected
+hist(celldetected)
+
+# summary stats of celldetected
+summary(celldetected)
+# the mean number of genes detected per cell in 1059
+
+# 1059/13407, this represents about 8% of the total number of genes
 
 
 
