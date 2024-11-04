@@ -174,13 +174,50 @@ ordered <- chosen[order(chosen$mean.AUC, decreasing=TRUE),]
 head(ordered[,1:4])
 
 
-## Question 6a
+## Question 6b
 
 # the top six marker genes in the fly anterior midgut are Mal-A6, Men-b, vnd, betaTry, Mal-A1, Nhe2. 
-# they are involved in metabolism of glucose
+# they are involved in metabolism of glucose and other sugars
+
+# plot expression of top marker genes
+top_marker_plot <- plotExpression(epi, c("Mal-A6","Men-b","vnd","betaTry","Mal-A1","Nhe2"), x ="annotation") + 
+  labs(x = "Annotation", y = "Expression Log Fold Change",
+       title = "Anterior Midgut Expression Log Fold Change") +
+  theme(axis.text.x=element_text(angle=90))
+
+ggsave("top_marker_genes_anterior_midgut.png", plot = top_marker_plot)
 
 
+## Question 7
 
+# analyze somatic percursor cells
+# subset somatic precursor cells 
+spc_all <- colData(gut)$broad_annotation == "somatic precursor cell"
+spc <- gut[, spc_all]
 
+# log normalize counts so scoreMarkers runs 
+spc <- logNormCounts(spc)  
 
+# marker genes for precursor cells
+spc_marker_info <- scoreMarkers(spc, colData(spc)$annotation)
+
+# selected genes
+selected_spc <- spc_marker_info[["intestinal stem cell"]]
+
+# order genes 
+ordered_spc <- selected_spc[order(selected_spc$mean.AUC, decreasing=TRUE),]
+
+# create genes of interest vector with names of top 6 marker genes
+spc_goi = rownames(ordered_spc)[1:6]
+
+# plot top 6 genes
+spc_goi_plot <- plotExpression(spc, features = spc_goi, x = "annotation") +
+  labs(x= "Annotation",y="Expression Log Fold Change",
+       title = "Log Fold Change of Expression of Top Six Somatic Precursor Cell Marker Genes") +
+  theme(axis.text.x=element_text(angle=90)) 
+
+ggsave("top_six_genes_spc.png", plot = spc_goi_plot)
+
+# The two cell types with the most similar expression patterns are enteroblasts and intestinal stem cells
+# DI is the marker that looks most specific for intestinal stem cells
 
