@@ -38,7 +38,16 @@ reducedDimNames(gut)
 
 ## Question 2
 
+# number of columns in colData(gut)
+num_cols_colData <- ncol(colData(gut))
+# There are 39 columns in colData(gut)
 
+# to see column names in colData(gut)
+colnames(colData(gut))
+# The three most interesting column names to me are tissue, n_genes, and age because combining information from those will give you insight into fly aging.
+
+# UMAP plot
+plotReducedDim(gut, "X_umap", colour_by= "broad_annotation")
 
 
 
