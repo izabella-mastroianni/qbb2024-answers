@@ -141,5 +141,46 @@ ggsave("mito_vs_broad_plot.png", plot = mito_vs_broad_plot, width = 8, height = 
 # this is possibly because there is a lot of rapid turnover of these cell types
 
 
+### Exercise 3 ###
+
+## Question 6a
+
+# subset cells annotated as "epithelial cell"
+coi <- colData(gut)$broad_annotation == "epithelial cell"
+
+# make new SingleCellExperiment object subsetting gut by coi
+epi <- gut[, coi]
+
+# make epi a dataframe for plotting ease 
+epi_df <- as.data.frame(reducedDim(epi, "X_umap"))
+epi_df$annotation <- colData(epi)$broad_annotation
+
+# UMAP plot of epi 
+epi_umap_plot <- ggplot(epi_df, aes(x = V1, y = V2, color = annotation)) +
+  geom_point() +
+  labs(title = "UMAP of Epithelial Cells", x = "UMAP 1", y = "UMAP 2") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+ggsave("epi_umap_plot.png", plot = epi_umap_plot, width = 8, height = 6, dpi = 300)
+
+# marker genes in anterior midgut
+# pairwise comparisons of all annotation categories
+marker.info <- scoreMarkers(epi, colData(epi)$annotation)
+
+# identify top marker genes
+chosen <- marker.info[["enterocyte of anterior adult midgut epithelium"]]
+ordered <- chosen[order(chosen$mean.AUC, decreasing=TRUE),]
+head(ordered[,1:4])
+
+
+## Question 6a
+
+# the top six marker genes in the fly anterior midgut are Mal-A6, Men-b, vnd, betaTry, Mal-A1, Nhe2. 
+# they are involved in metabolism of glucose
+
+
+
+
 
 
