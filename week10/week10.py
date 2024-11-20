@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import imageio
 import plotly.express as px
 import plotly
+import pandas as pd
 
 # helps to reshape things easily 
 na = np.newaxis
@@ -22,8 +23,9 @@ images = {}
 # specify variables for loop
 genename = ["APEX1", "PIM2", "POLR2B", "SRSF1"]
 fields = ["field0", "field1"]
-channels = ["DAPI", "PCNA", "nascentRNA", "DAPI_c"] 
-# DAPI_c only appears for a few genes, will be ignored by the code later
+channels = ["DAPI", "PCNA", "nascentRNA"] 
+
+# deleted DAPI_c images because not supposed to be there
 
 # loop through images to load in
 for name in genename:
@@ -33,9 +35,10 @@ for name in genename:
             try:
                 img = imageio.v3.imread(file_path).astype(np.uint16)
                 images[f"{name}_{field}_{channel}"] = img
-                print(f"{name}_{field}_{channel} processed")
+                # print(f"{name}_{field}_{channel} processed")
             except FileNotFoundError:
-                print(f"{name}_{field}_{channel} not found")
+                continue 
+                # print(f"{name}_{field}_{channel} not found")
 
 # make list of image arrays
 all_img_arrays = []
@@ -75,7 +78,7 @@ for img in all_img_arrays:
 
 ## 2.2
 
-# from long coding, find labels based on dapi mask
+# from live coding, find labels based on dapi mask
 # Let's use a function to find nuclei bodies
 def find_labels(mask):
     # Set initial label
@@ -191,41 +194,100 @@ label_array = []
 for mask in binary_mask:
     labels = find_labels(mask)
     label_array.append(labels)
-print(type(label_array))
-plt.imshow(label_array[0])
-plt.show
+# print(type(label_array))
+# plt.imshow(label_array[0])
+# plt.show
 
+# make sure label_array is 8, when DAPI_c was there it was 10 and messing up all the code
+# print(len(label_array))
+# print(len(all_img_arrays))
 
 ## 2.3
 
-# filter by size 
+# filter by size, from live code 
 def filter_by_size(labels, minsize = 100, maxsize = 42000000000):
     # Find label sizes
-    sizes = numpy.bincount(labels.ravel())
+    sizes = np.bincount(labels.ravel())
     # Iterate through labels, skipping background
     for i in range(1, sizes.shape[0]):
         # If the number of pixels falls outsize the cutoff range, relabel as background
         if sizes[i] < minsize or sizes[i] > maxsize:
             # Find all pixels for label
-            where = numpy.where(labels == i)
+            where = np.where(labels == i)
             labels[where] = 0
     # Get set of unique labels
-    ulabels = numpy.unique(labels)
+    ulabels = np.unique(labels)
     for i, j in enumerate(ulabels):
         # Relabel so labels span 1 to # of labels
-        labels[numpy.where(labels == j)] = i
+        labels[np.where(labels == j)] = i
     return labels
 
 
-# Since the first label is 1 and the background is 0, let's adjust the background for more contrast
+# background label is 0, adjust for more contrast 
 label_copy = np.copy(labels)
 label_copy[np.where(label_copy == 0)] -= 50
-plt.imshow(label_copy)
-plt.show()
+# plt.imshow(label_copy)
+# plt.show()
 
-def filter_by_size(labels):
+# save to array
+for i in range(len(label_array)):
+    label_array[i] = filter_by_size(label_array[i])
+
+def filter_by_size_meanstdev(labels):
     sizes = np.bincount(labels.ravel())
+    # skip background sizes which are zero
+    non_zero_sizes = sizes[1:] 
+    mean_size = np.mean(non_zero_sizes)
+    std_size = np.std(non_zero_sizes)
+    min_size = mean_size - std_size
+    max_size = mean_size + std_size
+    for i in range(1, sizes.shape[0]):
+        if sizes[i] < min_size or sizes[i] > max_size:
+            where = np.where(labels == i)
+            labels[where] = 0
+        
+### Exercise 3 ###
 
+# 3.1
 
+# find mean signal for each nucleus from the PCNA and nascent RNA channels
+
+# make lists to store information
+genes_ls = []
+fields_ls = []
+nuclei_ls = []
+PCNA_signal = []
+nRNA_signal = []
+log2_ratio = []
+
+# for loop to go through each label for each array
+for genefield in range(len(label_array[:])):
+    for nucleus in range(np.amax(label_array[genefield]+1)):
+        if nucleus == 0: 
+            continue
+        else: 
+            # label with gene names
+            where = np.where(label_array[genefield] == nucleus)
+            # APEX1 is first two in list
+            if genefield in [0,1]:
+                genes_ls.append("APEX1")
+            # then are the two PIM2 images, elif = else if
+            elif genefield in [2,3]:
+                genes_ls.append("PIM2")
+            # then two POLR2B images
+            elif genefield in [4,5]:
+                genes_ls.append("POLR2B")
+            # then two SRSF1 images
+            elif genefield in [6,7]:
+                genes_ls.append("SRSF1")
+            if genefield in [0,2,4,6]: fields_ls.append(0)
+            else: fields_ls.append(1)
+            nuclei_ls.append(nucleus)
+            PCNA_signal.append(np.average(all_img_arrays[genefield][where][1]))
+            nRNA_signal.append(np.average(all_img_arrays[genefield][where][2]))
+            log2_ratio.append(np.log2(np.average(all_img_arrays[genefield][where][2])/np.average(all_img_arrays[genefield][where][1])))
+
+# save as csv
+pd.DataFrame({'gene':genes_ls,'viewField':fields_ls,'nucleusIDX':nuclei_ls,'nascentRNA':nRNA_signal,'PCNA':PCNA_signal,'Ratio':log2_ratio}).to_csv("mean_nucleus_signal.csv",sep=",",mode="w",header=True,index=False)
 
 
